@@ -1,0 +1,226 @@
+﻿@model Tienda.Models.Order
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Resumen de la orden</h1>
+<form asp-action="Payment" method="post">
+    <input type="hidden" asp-for="Id" name="idOrden"/>
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                Orden
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Id)
+            </dd>
+            <dt class="col-sm-2">
+                Nombre cliente
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CustomerName)
+            </dd>
+            <dt class="col-sm-2">
+                Documento cliente
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CustomerDocument)
+            </dd>
+            <dt class="col-sm-2">
+                Email cliente
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CustomerEmail)
+            </dd>
+            <dt class="col-sm-2">
+                Celular cliente
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CustomerMobile)
+            </dd>
+            <dt class="col-sm-2">
+                Estado orden
+            </dt>
+            <dd class="col-sm-10">                
+                @switch (Model.Status)
+                {
+                    case "CREATED":
+                        <span> CREADA</span>
+                        break;
+
+                    case "PAYED":
+                        <span> PAGADA</span>
+                        break;
+
+                    case "REJECTED":
+                        <span> RECHAZADA</span>
+                        break;
+                }
+            </dd>
+            <dt class="col-sm-2">
+                Fecha creación
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CreatedAt)
+            </dd>
+            <dt class="col-sm-2">
+                Valor orden
+            </dt>
+            <dd class="col-sm-10">
+                <h5>@Html.DisplayFor(model => model.ValorOrder)</h5>
+            </dd>
+        </dl>
+
+        <div class="row">
+            <div class="col-md-4">
+
+                @if (Model.Payments.Count == 0)
+                {
+                    <input type="submit" value="Pagar" class="btn btn-success btn-block" />
+                    <br />
+                }
+                else
+                {
+                    @if (Convert.ToBoolean(ViewBag.PagosRechazados))
+                    {
+                        <input type="submit" value="Pagar" class="btn btn-success btn-block" />
+                        <br />
+                    }
+                }
+            </div>
+            <div class="col-md-6">
+
+                @if (ViewData["Success"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>@ViewData["Success"]</strong> 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+        
+        <div class="row">
+            <h4>Producto</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Código
+                        </th>
+                        <th>
+                            Descrpción
+                        </th>
+                        <th>
+                            Cantidad
+                        </th>
+                        <th>
+                            Valor
+                        </th>
+                        <th>
+                            Total
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>
+                                @item.CodigoProducto
+                            </td>
+                            <td>
+                                @item.NombreProducto
+                            </td>
+                            <td>
+                                @item.Cantidad
+                            </td>
+                            <td>
+                                @item.Valor.ToString("C2")
+                            </td>
+                            <td>
+                                @item.Total.ToString("C2")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+            @if (Model.Payments.Count > 0)
+            {
+                <div class="row">
+                    <h4>Pagos</h4>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Id
+                                </th>
+                                <th>
+                                    Fecha
+                                </th>
+                                <th>
+                                    Estado
+                                </th>
+                                <th>
+                                    Mensaje
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Payments)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.PaymentId
+                                    </td>
+                                    <td>
+                                        @item.Fecha
+                                    </td>
+                                    <td>
+
+                                        @switch (@item.Status)
+                                        {
+                                            case "PENDING":
+                                                <span> PENDIENTE</span>
+                                                break;
+
+                                            case "PAYED":
+                                                <span> REALIZADO</span>
+                                                break;
+
+                                            case "REJECTED":
+                                                <span> RECHAZADO</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>  
+                                        <span>@item.Message</span>
+                                    </td>
+                                    <td>
+                                        @if (item.Status == "PENDING")
+                                        {
+                                            <a href="@item.UrlPago" class="btn btn-success btn-sm btn-block">Continuar con el pago</a>                                            
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+        </div>
+        }
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <a class="btn btn-outline-primary" asp-controller="Orders" asp-action="Index">Lista de ordenes</a>
+        </div>
+    </div>
+</form>

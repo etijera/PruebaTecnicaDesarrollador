@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Tienda.Models.Order>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Lista de ordenes</h1>
+
+    
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Orden
+            </th>
+            <th>
+                Nombre cliente
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerDocument)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerMobile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerDocument)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerMobile)
+            </td>
+            <td>
+                
+                @switch (item.Status)
+                {
+                    case "CREATED":
+                        <span> CREADA</span>
+                    break;
+
+                    case "PAYED":
+                        <span> PAGADA</span>
+                    break;
+
+                    case "REJECTED":
+                        <span> RECHAZADA</span>
+                    break;
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Detalle</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<a class="btn btn-outline-primary" asp-controller="Home" asp-action="Index">Productos en venta</a>

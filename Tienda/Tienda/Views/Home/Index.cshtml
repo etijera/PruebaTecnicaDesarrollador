@@ -1,0 +1,33 @@
+﻿@model List<Producto>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Productos</h1>
+
+
+    <form asp-action="Index" method="post">
+        <div class="row">
+
+            @foreach (var prod in Model)
+            { 
+            <div class="col-sm-3">
+                <div class="card text-center" style="height: 400px">
+                    <div class="card-header"><strong>@prod.Descripcion</strong> </div>
+                    <img class="card-img-top" src="@prod.Imagen" alt="Card image cap">
+                    <div class="card-body">
+                        <input type="hidden" value="@prod.Codigo" />
+                        <h5 class="card-title">Valor: @prod.Valor.ToString("C2")</h5>                        
+                        <input type="submit" value="Comprar" class="btn btn-outline-primary" asp-route-codigo="@prod.Codigo" asp-route-descripcion="@prod.Descripcion" asp-route-valor="@prod.Valor" asp-route-imagen="@prod.Imagen" />
+                    </div>
+                </div>
+            </div> 
+            }        
+
+            </div>
+    </form>
+</div>
+
+

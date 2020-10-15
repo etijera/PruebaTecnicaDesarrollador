@@ -1,0 +1,74 @@
+﻿@model Tienda.Models.Order
+
+@{
+    ViewData["Title"] = "Create";
+    var valPro = ViewBag.ValorProducto;
+}
+
+<h1>Realizar orden</h1>
+
+<hr />
+<form asp-action="Create" method="post">
+
+    <div class="row">
+        <div class="col-md-6 align-self-center align-content-end align-items-end">
+            <h3>Producto</h3>
+            <div class="card w-50" style="height: 400px">
+                <div class="card-header text-center"><strong>@ViewBag.NombreProducto</strong> </div>
+                <img class="card-img-top" src="@ViewBag.ImagenProducto" alt="Card image cap">
+                <div class="card-body">
+                    <input type="hidden" value="@ViewBag.CodigoProducto" />
+                    <h6 class="card-text text-right"><strong>Valor: @valPro </strong></h6>
+                    <h6 class="card-text text-right"><strong>Cantidad: 1</strong></h6>
+                </div>
+            </div>
+            <div>
+                <h2>Total a Pagar: @ViewBag.ValorProducto</h2>
+            </div>
+        </div>
+
+        <div class="col-md-6 align-self-center">
+            <h3>Datos del cliente</h3>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CustomerName" class="control-label"></label>
+                <input asp-for="CustomerName" class="form-control" />
+                <span asp-validation-for="CustomerName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerDocument" class="control-label"></label>
+                <input asp-for="CustomerDocument" class="form-control" />
+                <span asp-validation-for="CustomerDocument" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerEmail" class="control-label"></label>
+                <input asp-for="CustomerEmail" class="form-control" />
+                <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerMobile" class="control-label"></label>
+                <input asp-for="CustomerMobile" class="form-control" type="tel" />
+                <span asp-validation-for="CustomerMobile" class="text-danger"></span>
+            </div>
+            <br />
+            
+            <div class="form-group">
+                <div class="row align-content-end justify-content-between">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6">
+                        <a class="btn btn-outline-danger" asp-controller="Home" asp-action="Index">Cancelar</a>
+                        <input type="submit" value="Confirmar orden" class="btn btn-outline-success" asp-route-codigoProd="@ViewBag.CodigoProducto" asp-route-descripcionProd="@ViewBag.NombreProducto" asp-route-valorProd="@ViewBag.ValorProducto" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

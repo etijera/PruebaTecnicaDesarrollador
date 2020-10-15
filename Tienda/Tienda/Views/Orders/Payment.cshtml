@@ -1,0 +1,72 @@
+﻿@model Tienda.Models.Order
+
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<h1>Proceso de pago</h1>
+<div>
+    <h3>Datos del pago</h3>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Nombre cliente
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CustomerName)
+        </dd>
+        <dt class="col-sm-2">
+            Email cliente
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CustomerEmail)
+        </dd>
+        <dt class="col-sm-2">
+            Celular cliente
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CustomerMobile)
+        </dd>
+        <dt class="col-sm-2">
+            Estado orden
+        </dt>
+        <dd class="col-sm-10">            
+            @switch (Model.Status)
+            {
+                case "CREATED":
+                    <span> CREADA</span>
+                    break;
+
+                case "PAYED":
+                    <span> PAGADA</span>
+                    break;
+
+                case "REJECTED":
+                    <span> RECHAZADA</span>
+                    break;
+            }
+        </dd>
+        <dt class="col-sm-2">
+            Fecha creación
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dd>
+        <dt class="col-sm-2">
+            Valor orden
+        </dt>
+        <dd class="col-sm-10">
+            <h5>@Html.DisplayFor(model => model.ValorOrder)</h5>
+        </dd>
+    </dl>
+
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <a class="btn btn-outline-success btn-block" href="@ViewBag.UrlPago">Realizar pago</a>
+    </div>
+    <div class="col-md-2">
+        <a class="btn btn-outline-danger" asp-controller="Orders" asp-action="Details" asp-route-id="@Model.Id">Cancelar</a>
+    </div>
+    
+    
+</div>
