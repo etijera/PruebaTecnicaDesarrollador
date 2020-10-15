@@ -24,15 +24,19 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\DotNet\version_2018_07_16\Release\Newtonsoft.Json.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="PlacetoPay.Integrations.Library.CSharp">
       <HintPath>..\DotNet\version_2018_07_16\Release\PlacetoPay.Integrations.Library.CSharp.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\DotNet\version_2018_07_16\Release\RestSharp.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="SoapHttpClient">
       <HintPath>..\DotNet\version_2018_07_16\Release\SoapHttpClient.dll</HintPath>
+      <Private>true</Private>
     </Reference>
   </ItemGroup>
 
