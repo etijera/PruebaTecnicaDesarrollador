@@ -13,23 +13,36 @@ using PlacetoPay.Integrations.Library.CSharp.Contracts;
 using PlacetoPay.Integrations.Library.CSharp.Entities;
 using PlacetoPay.Integrations.Library.CSharp.Message;
 using Tienda.Models;
+using Tienda.Servicios.Interfaces;
 using P2P = PlacetoPay.Integrations.Library.CSharp.PlacetoPay;
 
 namespace Tienda.Controllers
 {
     public class OrdersController : Controller
     {
-        private readonly TiendaContext _context;
+        #region Atributos
 
-        public OrdersController(TiendaContext context)
+        private readonly IServicioOrdenes _servicioOrdenes;
+        private readonly IServicioPagos _servicioPagos;
+
+        #endregion
+
+        #region Constructor
+
+        public OrdersController(IServicioOrdenes servicioOrdenes, IServicioPagos servicioPagos)
         {
-            _context = context;
+            this._servicioOrdenes = servicioOrdenes;
+            this._servicioPagos = servicioPagos;
         }
+
+        #endregion
+
+        #region Métodos
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Orders.ToListAsync());
+            return View("Index", await _servicioOrdenes.ObtenerOrdenes());
         }
 
         // GET: Orders/Details/5
@@ -40,9 +53,8 @@ namespace Tienda.Controllers
                 return NotFound();
             }
 
-            // Buscar información de la orden
-            var order = await _context.Orders.Include("OrderDetails").Include("Payments")
-                .FirstOrDefaultAsync(m => m.Id == id);
+            // Buscar información de la orden ObtenerOrden
+            var order = await _servicioOrdenes.ObtenerOrden(id.Value);
 
             if (order == null)
             {
@@ -91,11 +103,23 @@ namespace Tienda.Controllers
                                     break;
                             }
                         }
+                        else
+                        {
+                            message = response.Status.Message;
+                        }
 
                         // Actualizar datos del pago y datos de la orden
-                        _context.Update(pay);
-                        _context.Update(order);
-                        await _context.SaveChangesAsync();
+                        if (await _servicioPagos.ActualizarPago(pay) == 0)
+                        {
+                            // NotFound Response Status 404.
+                            return NotFound();
+                        }
+
+                        if (await _servicioOrdenes.ActualizarOrden(order) == 0)
+                        {
+                            // NotFound Response Status 404.
+                            return NotFound();
+                        }
                     }                    
                 }
                 else
@@ -108,7 +132,7 @@ namespace Tienda.Controllers
             ViewBag.PagosRechazados = pagosRechazados;
             ViewData["Success"] = message;
 
-            return View(order);
+            return View("Details", order);
         }
 
         // GET: Orders/Payment/5
@@ -118,9 +142,8 @@ namespace Tienda.Controllers
             {
                 return NotFound();
             }
-
-            var order = await _context.Orders.Include("OrderDetails").Include("Payments")
-                .FirstOrDefaultAsync(m => m.Id == idOrden);
+            
+            var order = await _servicioOrdenes.ObtenerOrden(idOrden.Value); 
 
             if (order == null)
             {
@@ -136,8 +159,7 @@ namespace Tienda.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Payment(int idOrden)
         {
-            var order = await _context.Orders.Include("OrderDetails").Include("Payments")
-               .FirstOrDefaultAsync(m => m.Id == idOrden);
+            var order = await _servicioOrdenes.ObtenerOrden(idOrden);
 
             if (order == null)
             {
@@ -180,8 +202,12 @@ namespace Tienda.Controllers
                     Message = response.Status.Message
                 };
 
-                _context.Add(pago);
-                await _context.SaveChangesAsync();
+                if (await _servicioPagos.CrearPago(pago) == 0)
+                {
+                    // NotFound Response Status 404.
+                    return NotFound();
+                }
+
 
                 return RedirectToAction("Payment", "Orders", new { idOrden = order.Id, urlPago = response.ProcessUrl });
             }
@@ -199,7 +225,7 @@ namespace Tienda.Controllers
             ViewBag.ImagenProducto = imagen;
             ViewBag.ValorProducto = valor;
 
-            return View();
+            return View("Create");
         }
 
         // POST: Orders/Create
@@ -216,9 +242,13 @@ namespace Tienda.Controllers
                 order.ValorOrder = Convert.ToDouble(valorProd);
                 order.Status = "CREATED";
 
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                
+                if (await _servicioOrdenes.CrearOrden(order) == 0)
+                {
+                    // NotFound Response Status 404.
+                    return NotFound();
+                }
+
+
                 OrderDetail orderDetail = new OrderDetail()
                 {
                     OrderId = order.Id,
@@ -229,17 +259,15 @@ namespace Tienda.Controllers
                     Total = Convert.ToDouble(valorProd)
                 };
 
-                _context.Add(orderDetail);
-                await _context.SaveChangesAsync();
-                
+                if (await _servicioOrdenes.CrearOrdenDetalle(orderDetail) == 0)
+                {
+                    // NotFound Response Status 404.
+                    return NotFound();
+                }
+
                 return RedirectToAction("Details", "Orders", new { id = order.Id});
             }
-            return View(order);
-        }
-
-        private bool OrderExists(int id)
-        {
-            return _context.Orders.Any(e => e.Id == id);
+            return View("Create", order);
         }
 
         private Gateway GetGateway()
@@ -249,7 +277,9 @@ namespace Tienda.Controllers
                                       Environment.GetEnvironmentVariable("TranKey"),
                                       new Uri(Environment.GetEnvironmentVariable("UrlBase")),
                                       Gateway.TP_REST);
-        }        
+        }
+
+        #endregion
 
     }
 }

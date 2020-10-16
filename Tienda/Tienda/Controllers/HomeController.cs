@@ -12,12 +12,15 @@ namespace Tienda.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        #region Constructor
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController()
         {
-            _logger = logger;
         }
+
+        #endregion
+
+        #region Métodos
 
         public IActionResult Index()
         {
@@ -41,5 +44,7 @@ namespace Tienda.Controllers
         {                
             return RedirectToAction("Create", "Orders",new { codigo = codigo, descripcion = descripcion, imagen = imagen, valor = valor });
         }
+
+        #endregion
     }
 }

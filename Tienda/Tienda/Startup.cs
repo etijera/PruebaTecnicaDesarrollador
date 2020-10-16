@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Tienda.Models;
+using Tienda.Servicios;
+using Tienda.Servicios.Interfaces;
 
 namespace Tienda
 {
@@ -28,9 +31,21 @@ namespace Tienda
             services.AddControllersWithViews();
 
             string connString = ConfigurationExtensions.GetConnectionString(this.Configuration, "DefaultConnectionString");
-            services.AddDbContext<TiendaContext>(
+            services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(connString)
                 );
+
+            //services.AddDbContext<TiendaContext>(
+            //    options => options.UseSqlite("Data Source = sqlitedemo.db")
+            //    );
+
+            //services.AddDbContext<TiendaContext>(
+            //    options => options.UseInMemoryDatabase(databaseName: "InMemory_DB")
+            //    );
+
+            // Servicios
+            services.AddTransient<IServicioOrdenes, ServicioOrdenes>();
+            services.AddTransient<IServicioPagos, ServicioPagos>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Tienda.Models;
+using Tienda;
 
 namespace Tienda.Migrations
 {
-    [DbContext(typeof(TiendaContext))]
-    [Migration("20201015025648_Nueva")]
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20201016063001_Nueva")]
     partial class Nueva
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
