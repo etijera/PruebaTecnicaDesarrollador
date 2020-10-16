@@ -154,14 +154,16 @@ namespace Tienda.Controllers
                                         email: order.CustomerEmail,
                                         mobile: order.CustomerMobile
                                         );
-
+            
             Amount amount = new Amount(Convert.ToDouble(order.ValorOrder), "COP");
-            PlacetoPay.Integrations.Library.CSharp.Entities.Payment payment = new PlacetoPay.Integrations.Library.CSharp.Entities.Payment(order.Id.ToString(), "Pago básico de prueba " + order.Id.ToString(), amount, false, person);
+            PlacetoPay.Integrations.Library.CSharp.Entities.Payment payment = new PlacetoPay.Integrations.Library.CSharp.Entities.Payment($"TEST_{DateTime.Now:yyyyMMdd_hhmmss}_{order.Id}", $"Pago básico de prueba orden {order.Id} ", amount, false, person);
             RedirectRequest request = new RedirectRequest(payment,
                                                             "https://localhost:44336/Orders/Details/" + order.Id.ToString(),
                                                             "181.78.12.121",
                                                             "PlacetoPay Sandbox",
-                                                            (order.CreatedAt.AddMinutes(15)).ToString("yyyy-MM-ddTHH:mm:sszzz"));
+                                                            (order.CreatedAt.AddMinutes(60)).ToString("yyyy-MM-ddTHH:mm:sszzz"),
+                                                            person,
+                                                            person);
 
             RedirectResponse response = gateway.Request(request);
 

@@ -22,10 +22,10 @@ namespace Tienda.Controllers
         public IActionResult Index()
         {
             var productos= new List<Producto>() {   
-                                                    new Producto { Codigo = "01", Descripcion = "Camisa Azul", Imagen = "/Images/Camisa1.jpg", Valor = 100 },
-                                                    new Producto { Codigo = "02", Descripcion = "Camisa Roja", Imagen = "/Images/Camisa2.jpg", Valor = 150 },
-                                                    new Producto { Codigo = "03", Descripcion = "Pantalón Rojo", Imagen = "/Images/Pantalon1.jpg", Valor = 200 },
-                                                    new Producto { Codigo = "04", Descripcion = "Pantalón Verde", Imagen = "/Images/Pantalon2.jpg", Valor = 200 }
+                                                    new Producto { Codigo = "01", Descripcion = "Camisa Azul", Imagen = "/Images/Camisa1.jpg", Valor = 55000 },
+                                                    new Producto { Codigo = "02", Descripcion = "Camisa Roja", Imagen = "/Images/Camisa2.jpg", Valor = 60000 },
+                                                    new Producto { Codigo = "03", Descripcion = "Pantalón Rojo", Imagen = "/Images/Pantalon1.jpg", Valor = 80000 },
+                                                    new Producto { Codigo = "04", Descripcion = "Pantalón Verde", Imagen = "/Images/Pantalon2.jpg", Valor = 75000 }
                                                 };
             return View(productos);
         }

@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
-    var valPro = ViewBag.ValorProducto;
+    decimal valPro = Convert.ToDecimal(ViewBag.ValorProducto);    
 }
 
 <h1>Realizar orden</h1>
@@ -18,12 +18,12 @@
                 <img class="card-img-top" src="@ViewBag.ImagenProducto" alt="Card image cap">
                 <div class="card-body">
                     <input type="hidden" value="@ViewBag.CodigoProducto" />
-                    <h6 class="card-text text-right"><strong>Valor: @valPro </strong></h6>
+                    <h6 class="card-text text-right"><strong>Valor: @valPro.ToString("C2") </strong></h6>
                     <h6 class="card-text text-right"><strong>Cantidad: 1</strong></h6>
                 </div>
             </div>
             <div>
-                <h2>Total a Pagar: @ViewBag.ValorProducto</h2>
+                <h4>Total a Pagar: <strong> @valPro.ToString("C2") </strong> </h4>
             </div>
         </div>
 

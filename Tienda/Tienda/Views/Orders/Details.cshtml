@@ -61,8 +61,8 @@
             <dt class="col-sm-2">
                 Fecha creación
             </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CreatedAt)
+            <dd class="col-sm-10">                
+                @Model.CreatedAt.ToString("yyyy-MM-dd hh:mm tt")
             </dd>
             <dt class="col-sm-2">
                 Valor orden
@@ -181,7 +181,7 @@
                                         @item.PaymentId
                                     </td>
                                     <td>
-                                        @item.Fecha
+                                        @item.Fecha.ToString("yyyy-MM-dd hh:mm tt")
                                     </td>
                                     <td>
 
@@ -191,7 +191,7 @@
                                                 <span> PENDIENTE</span>
                                                 break;
 
-                                            case "PAYED":
+                                            case "APPROVED":
                                                 <span> REALIZADO</span>
                                                 break;
 
