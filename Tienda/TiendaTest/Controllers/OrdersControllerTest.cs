@@ -22,6 +22,8 @@ namespace TiendaTest.Controllers
             sqDbEnMemoria = new BasePruebas();
         }
 
+        #region Métodos
+
         [TestMethod]
         public void IndexGetRetornaVistaIndexConTodosLosRegistrosLasOrdenesBDAsync()
         {
@@ -148,8 +150,6 @@ namespace TiendaTest.Controllers
                 "El ActionResult debe ser del tipo NotFoundResult.");
         }
 
-
-
         [TestMethod]
         public void CreateGetRetornaVistaCreate()
         {
@@ -170,7 +170,6 @@ namespace TiendaTest.Controllers
             Assert.AreEqual(actionResult.ViewName, expectedView,
                 "El nombre de la Vista devuelta debe ser " + expectedView);
         }
-
  
         [TestMethod]
         public void CreatePostRetornaVistaCreateConModeloAlPasarModeloInvalidoAsync()
@@ -286,7 +285,171 @@ namespace TiendaTest.Controllers
             Assert.AreEqual(order.CustomerName, servicioOrdenes.ObtenerOrden(2).Result.CustomerName,
                 "El nombre del nuevo registro creado es el correcto.");
         }
-        
 
+        [TestMethod]
+        public void PaymentGetRetornaVistaPayment()
+        {
+            // Arrange
+            string expectedView = "Payment";
+            var context = sqDbEnMemoria.ConstruirContext("Base35");
+
+            context.Orders.Add(new Order()
+            {
+                CustomerName = "Cliente 1",
+                CustomerDocument = "456",
+                CustomerEmail = "cliente2@gmail.com",
+                CustomerMobile = "654",
+                Status = "CREATED",
+                CreatedAt = DateTime.Now,
+                ValorOrder = Convert.ToDouble(150000)
+            });
+
+            context.SaveChanges();
+
+            var order = context.Orders.Single();
+
+            context.OrderDetails.Add( new OrderDetail()
+            {
+                OrderId = order.Id,
+                CodigoProducto = "01",
+                NombreProducto = "Producto 01",
+                Cantidad = 1,
+                Valor = 20000,
+                Total = 20000
+            });
+
+            context.Payments.Add( new Payment()
+            {
+                OrderId = order.Id,
+                Fecha = DateTime.Now,
+                RequestId = 123,
+                Status = "OK",
+                UrlPago = "https://www.pagame.com"
+            });
+
+            context.SaveChanges();
+
+            var servicioOrdenes = new ServicioOrdenes(context);
+            var servicioPago = new ServicioPagos(context);
+
+            var ordersController = new OrdersController(servicioOrdenes, servicioPago);
+
+            // Act
+            var actionResult = ordersController.Payment(order.Id, "https://www.pagame.com").Result as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(actionResult,
+                "El ActionResult no debe ser Null.");
+            Assert.IsInstanceOfType(actionResult, typeof(ViewResult),
+                "El ActionResult debe ser del tipo ViewResult.");
+            Assert.AreEqual(actionResult.ViewName, expectedView,
+                "El nombre de la Vista devuelta debe ser " + expectedView);
+        }
+
+        [TestMethod]
+        public void PaymentPostRetornaVistaPaymentAlCrearUnPagoValidoAsociadoAUnaOrdenEnBbAsync()
+        {
+            // Arrange
+            string expectedView = "Payment";
+
+            var context = sqDbEnMemoria.ConstruirContext("Base77");
+
+            context.Orders.Add(new Order()
+            {
+                CustomerName = "Cliente 1",
+                CustomerDocument = "1044918056",
+                CustomerEmail = "cliente2@gmail.com",
+                CustomerMobile = "301483652",
+                Status = "CREATED",
+                CreatedAt = DateTime.Now,
+                ValorOrder = Convert.ToDouble(150000)
+            });
+
+            context.SaveChanges();
+
+            var order = context.Orders.Single();
+
+            context.OrderDetails.Add(new OrderDetail()
+            {
+                OrderId = order.Id,
+                CodigoProducto = "01",
+                NombreProducto = "Producto 01",
+                Cantidad = 1,
+                Valor = 20000,
+                Total = 20000
+            });
+
+            var servicioOrdenes = new ServicioOrdenes(context);
+            var servicioPago = new ServicioPagos(context);
+
+            var ordersController = new OrdersController(servicioOrdenes, servicioPago);
+
+            // Act
+            var actionResult = ordersController.Payment(order.Id).Result as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(actionResult,
+                "El ActionResult no debe ser Null.");
+            Assert.IsInstanceOfType(actionResult, typeof(RedirectToActionResult),
+                "El ActionResult debe ser del tipo RedirectToActionResult.");
+            Assert.AreEqual(actionResult.ActionName, expectedView,
+                "El nombre de la Vista devuelta debe ser " + expectedView);
+            Assert.AreEqual(1, servicioPago.ObtenerPagos().Result.Count(),
+                "Se ha creado un nuevo registro en la BD.");
+        }
+
+        [TestMethod]
+        public void PaymentPostRetornaVistaDetailsAlNoCrearUnPagoValidoAsociadoAUnaOrdenEnBbAsync()
+        {
+            // Arrange
+            string expectedView = "Details";
+
+            var context = sqDbEnMemoria.ConstruirContext("Base777");
+
+            context.Orders.Add(new Order()
+            {
+                CustomerName = "Cliente 1",
+                CustomerDocument = "123",
+                CustomerEmail = "cliente2@gmail.com",
+                CustomerMobile = "321",
+                Status = "CREATED",
+                CreatedAt = DateTime.Now,
+                ValorOrder = Convert.ToDouble(150000)
+            });
+
+            context.SaveChanges();
+
+            var order = context.Orders.Single();
+
+            context.OrderDetails.Add(new OrderDetail()
+            {
+                OrderId = order.Id,
+                CodigoProducto = "01",
+                NombreProducto = "Producto 01",
+                Cantidad = 1,
+                Valor = 20000,
+                Total = 20000
+            });
+
+            var servicioOrdenes = new ServicioOrdenes(context);
+            var servicioPago = new ServicioPagos(context);
+
+            var ordersController = new OrdersController(servicioOrdenes, servicioPago);
+
+            // Act
+            var actionResult = ordersController.Payment(order.Id).Result as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(actionResult,
+                "El ActionResult no debe ser Null.");
+            Assert.IsInstanceOfType(actionResult, typeof(RedirectToActionResult),
+                "El ActionResult debe ser del tipo RedirectToActionResult.");
+            Assert.AreEqual(actionResult.ActionName, expectedView,
+                "El nombre de la Vista devuelta debe ser " + expectedView);
+            Assert.AreEqual(0, servicioPago.ObtenerPagos().Result.Count(),
+                "No se creo ningún registro en la base de datos.");
+        }
+
+        #endregion
     }
 }

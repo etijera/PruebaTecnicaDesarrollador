@@ -152,7 +152,7 @@ namespace Tienda.Controllers
 
             ViewBag.UrlPago = urlPago == null ? "" : urlPago;
 
-            return View(order);
+            return View("Payment", order);
         }
 
         [HttpPost]
@@ -272,10 +272,10 @@ namespace Tienda.Controllers
 
         private Gateway GetGateway()
         {
-
-            return new P2P(Environment.GetEnvironmentVariable("Login"),
-                                      Environment.GetEnvironmentVariable("TranKey"),
-                                      new Uri(Environment.GetEnvironmentVariable("UrlBase")),
+            // Se leen las variables de ambiente, pero como para las pruebas vienen nulas se asigna el valor por defecto (Es para las pruebas unitarias)
+            return new P2P(Environment.GetEnvironmentVariable("Login") == null? "6dd490faf9cb87a9862245da41170ff2": Environment.GetEnvironmentVariable("Login"),
+                                      Environment.GetEnvironmentVariable("TranKey") == null ? "024h1IlD": Environment.GetEnvironmentVariable("TranKey"),
+                                      new Uri(Environment.GetEnvironmentVariable("UrlBase") == null ? "https://test.placetopay.com/redirection/": Environment.GetEnvironmentVariable("UrlBase")),
                                       Gateway.TP_REST);
         }
 

@@ -6,15 +6,8 @@ namespace TiendaTest.Controllers
 {
     [TestClass]
     public class HomeControllerTest
-    {
-        // Clase Base de Datos Fake
-        //private SqLiteDbFake sqLiteDbFake;
-
-        [TestInitialize]
-        public void Init()
-        {
-            //sqLiteDbFake = new SqLiteDbFake();
-        }
+    {    
+        #region Métodos
 
         [TestMethod]
         public void IndexElViewResultNoEsNull()
@@ -28,5 +21,7 @@ namespace TiendaTest.Controllers
             // Assert
             Assert.IsNotNull(result);
         }
+
+        #endregion
     }
 }

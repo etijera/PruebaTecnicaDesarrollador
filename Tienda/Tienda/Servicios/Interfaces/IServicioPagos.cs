@@ -8,6 +8,8 @@ namespace Tienda.Servicios.Interfaces
 {
     public interface IServicioPagos
     {
+        Task<IEnumerable<Payment>> ObtenerPagos();
+        Task<Payment> ObtenerPago(int id);
         Task<int> CrearPago(Payment pay);
         Task<int> ActualizarPago(Payment pay);
 

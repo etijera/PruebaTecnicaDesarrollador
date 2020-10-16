@@ -27,6 +27,16 @@ namespace Tienda.Servicios
 
         #region Métodos
 
+        public async Task<IEnumerable<Payment>> ObtenerPagos()
+        {
+            return await this._context.Payments.ToListAsync();
+        }
+
+        public async Task<Payment> ObtenerPago(int id)
+        {
+            return await this._context.Payments.SingleOrDefaultAsync(m => m.PaymentId == id);
+        }
+
         // RETORNA 0 SI NO SE HA EJECUTADO LA ACCIÓN O SI HA HABIDO UN ERROR
         public async Task<int> CrearPago(Payment pay)
         {

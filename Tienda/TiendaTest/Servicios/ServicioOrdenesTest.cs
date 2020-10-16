@@ -21,6 +21,8 @@ namespace TiendaTest.Servicios
             sqDbEnMemoria = new BasePruebas();
         }
 
+        #region Métodos
+
         [TestMethod]
         public void CrearOrdenValidaEnDbDevuelveNumerosRegistrosInsertadosAsync()
         {
@@ -196,5 +198,6 @@ namespace TiendaTest.Servicios
             }
         }
 
+        #endregion
     }
 }

@@ -21,6 +21,8 @@ namespace TiendaTest.Servicios
             sqDbEnMemoria = new BasePruebas();
         }
 
+        #region Método
+
         [TestMethod]
         public void CrearPagoValidaEnDbDevuelveNumerosRegistrosInsertadosAsync()
         {
@@ -140,5 +142,7 @@ namespace TiendaTest.Servicios
                 Assert.AreEqual("PAYED", context.Payments.Single().Status);
             }
         }
+
+        #endregion
     }
 }

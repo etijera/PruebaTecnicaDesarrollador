@@ -35,14 +35,6 @@ namespace Tienda
                 options => options.UseSqlServer(connString)
                 );
 
-            //services.AddDbContext<TiendaContext>(
-            //    options => options.UseSqlite("Data Source = sqlitedemo.db")
-            //    );
-
-            //services.AddDbContext<TiendaContext>(
-            //    options => options.UseInMemoryDatabase(databaseName: "InMemory_DB")
-            //    );
-
             // Servicios
             services.AddTransient<IServicioOrdenes, ServicioOrdenes>();
             services.AddTransient<IServicioPagos, ServicioPagos>();
